@@ -10,6 +10,34 @@ The product is experimental - built with GPT 5.6 Sol (High) using the [ChatGPT D
 
 I got a LoFree Flow Lite 84 recently, and it does not ship with native VIA support. Customization is one of the strongest reasons to use a custom keyboard, so this project provides an alternative.
 
+## Installation
+
+### Native macOS app
+
+Requirements: macOS 14 or later, a Swift 6 toolchain, and the keyboard connected in wired mode. Clone the private repository, then build and launch the app from its root:
+
+```sh
+git clone https://github.com/aaditagrawal/flow-control.git
+cd flow-control
+./script/build_and_run.sh --verify
+```
+
+The script builds, locally signs, and launches `mac/dist/Flow Control.app`. On first use, allow **Flow Control** in **System Settings → Privacy & Security → Input Monitoring**, quit the app, and reopen it. The local signing identity is for stable development permissions only; it is not a notarized Developer ID release.
+
+### Web app
+
+No installation is required. Open [aaditagrawal.github.io/flow-control](https://aaditagrawal.github.io/flow-control/) in a current Chrome or Edge browser, connect the keyboard by USB, and select **Connect keyboard**. Choose the `Air84@Lofree` device in the browser prompt. Safari and Firefox do not support WebHID.
+
+## Using Flow Control
+
+1. Connect the Flow Lite 84 in wired mode and select **Connect**. The app reads the current keyboard configuration before enabling writes.
+2. Choose the relevant macOS/Windows and Base/Fn context, then edit **Key Assignment**, **Lighting**, **Macros**, or **Device** settings.
+3. Review the pending changes. Edits remain local until you select **Apply to Keyboard** or **Apply All**.
+4. Apply the changes without disconnecting the keyboard. Flow Control creates a backup, writes only the changed records, and verifies the keyboard's readback.
+5. Use **Revert** or **Discard** to remove unapplied edits. Use **Export** before substantial changes if you want a portable configuration backup; use **Import** to load one later.
+
+The app supports only the device and firmware boundary documented below. Do not use it for firmware updates, receiver pairing, factory resets, or unsupported keyboards.
+
 ## Disclaimer
 
 Try it. This is very much a tech demo that works. 
