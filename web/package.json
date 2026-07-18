@@ -1,0 +1,33 @@
+{
+  "name": "web",
+  "private": true,
+  "license": "MIT",
+  "description": "Flow Control WebHID companion for the LoFree Flow Lite 84.",
+  "version": "0.0.0",
+  "type": "module",
+  "packageManager": "bun@1.3.14",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "vercel-build": "bun run build",
+    "build:sites": "bun run build && bun scripts/verify-sites-build.ts",
+    "check": "bun lint && bunx tsc --noEmit && bun test && bun run build",
+    "lint": "oxlint",
+    "test": "bun test",
+    "preview": "vite preview",
+    "preview:host": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "oxlint": "^1.71.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.1"
+  }
+}

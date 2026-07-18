@@ -1,0 +1,30 @@
+name: Bug report
+description: Report a reproducible Flow Control problem without private device data.
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not attach vendor installers, firmware, signing files, or personal backups.
+  - type: input
+    id: revision
+    attributes: {label: Flow Control revision}
+    validations: {required: true}
+  - type: input
+    id: identity
+    attributes: {label: Device identity, firmware, CID/MID, transport}
+    validations: {required: true}
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Affected surface
+      options: [native macOS, web, protocol, documentation]
+    validations: {required: true}
+  - type: textarea
+    id: reproduction
+    attributes: {label: Minimal reproduction and expected/actual result}
+    validations: {required: true}
+  - type: textarea
+    id: safety
+    attributes: {label: Did any device write occur? Can state be restored?}

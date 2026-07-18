@@ -1,0 +1,52 @@
+# OS and editor state
+.DS_Store
+.idea/
+.vscode/
+.codex/
+
+# Local credentials and signing identities
+.local-signing/
+*.p12
+*.p8
+*.mobileprovision
+*.keychain
+*.keychain-db
+
+# Build products and dependencies
+.build/
+dist/
+node_modules/
+coverage/
+*.dSYM/
+*.xcresult/
+mac/.build/
+mac/dist/
+web/dist/
+web/node_modules/
+packages/*/node_modules/
+
+# Research acquisitions: retain only authored manifests and summaries.
+research/official-web/*
+!research/official-web/README.md
+research/lofree-windows-driver/*
+!research/lofree-windows-driver/RESEARCH.md
+!research/lofree-windows-driver/PROVENANCE.md
+research/electron-prototype/
+
+# Local hosting bindings. Public deployment is defined by GitHub Actions.
+web/.openai/hosting.json
+
+# Vendor/Windows extraction residue, wherever it is produced.
+*.exe
+*.dll
+*.pdb
+*.obj
+*.lib
+*.res
+*.rar
+*.zip
+*.dmg
+*.app/
+
+# Unused local design exploration retained outside the public source set.
+web/src/assets/hero.png

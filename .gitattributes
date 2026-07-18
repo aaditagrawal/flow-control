@@ -1,0 +1,13 @@
+* text=auto eol=lf
+*.swift text
+*.ts text
+*.tsx text
+*.json text
+*.md text
+*.sh text eol=lf
+*.png binary
+*.pdf binary
+
+# Generated/vendor acquisitions must never be normalized if temporarily present.
+research/official-web/** -text
+research/lofree-windows-driver/** -text

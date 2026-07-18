@@ -1,0 +1,23 @@
+name: Compatibility evidence
+description: Submit read-only hardware evidence for a new firmware or variant.
+title: "compatibility: "
+labels: [compatibility]
+body:
+  - type: markdown
+    attributes:
+      value: New variants are read-only until maintainers define and pass a reversible validation gate.
+  - type: textarea
+    id: identity
+    attributes: {label: Product/manufacturer, VID:PID, firmware, CID/MID, transport, report metadata}
+    validations: {required: true}
+  - type: textarea
+    id: evidence
+    attributes: {label: Read-only evidence and acquisition method}
+    validations: {required: true}
+  - type: checkboxes
+    id: no-write
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I did not perform firmware, pairing, reset, or undocumented writes.
+          required: true

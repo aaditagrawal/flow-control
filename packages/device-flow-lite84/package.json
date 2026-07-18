@@ -1,0 +1,12 @@
+{
+  "name": "@flow-control/device-flow-lite84",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Internal capability-gated Flow Lite 84 device data for Flow Control; not published.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./device.json": "./device.json"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "lofree-flow-lite-84-ansi",
+  "name": "Lofree Flow Lite 84 ANSI",
+  "usb": { "vendorId": 1452, "productId": 591, "usagePage": 65282, "usage": 2, "reportId": 8, "reportBytes": 16 },
+  "physicalKeyCount": 84,
+  "systems": ["win", "mac"],
+  "layers": ["normal", "fn"],
+  "macroSlotsConfirmed": 15,
+  "firmwareUpdateEnabled": false
+}

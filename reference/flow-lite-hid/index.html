@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A visual HID and mapping reference for the Lofree Flow Lite 84 keyboard.">
+  <title>Flow Lite 84 — HID Field Guide</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f2efe6;
+      --paper-2: #e8e3d7;
+      --panel: #faf8f2;
+      --ink: #161a17;
+      --muted: #666d67;
+      --line: #c9c4b8;
+      --line-strong: #99958a;
+      --blue: #1748ff;
+      --blue-soft: #e7ebff;
+      --orange: #eb6439;
+      --orange-soft: #ffebe3;
+      --green: #1f7a53;
+      --green-soft: #e1f1e8;
+      --yellow: #b37700;
+      --yellow-soft: #fff1c9;
+      --red: #ad3434;
+      --red-soft: #f9e3df;
+      --shadow: 0 18px 50px rgba(28, 29, 25, .09);
+      --radius: 18px;
+      --mono: "SFMono-Regular", "Cascadia Code", "Roboto Mono", ui-monospace, monospace;
+      --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --serif: Iowan Old Style, Baskerville, "Times New Roman", serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        linear-gradient(rgba(22, 26, 23, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(22, 26, 23, .035) 1px, transparent 1px),
+        var(--paper);
+      background-size: 32px 32px;
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.5;
+    }
+
+    a { color: inherit; }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 12px;
+      left: 12px;
+      transform: translateY(-160%);
+      padding: 10px 14px;
+      border: 1px solid var(--ink);
+      background: var(--panel);
+    }
+    .skip-link:focus { transform: none; }
+
+    .shell {
+      width: min(1480px, calc(100% - 32px));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 32px;
+    }
+
+    .rail {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .rail-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .rail-mark::before {
+      content: "";
+      width: 16px;
+      height: 16px;
+      border: 5px solid var(--blue);
+      border-radius: 50%;
+    }
+    .rail nav { display: grid; gap: 4px; }
+    .rail nav a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 10px;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      text-decoration: none;
+    }
+    .rail nav a:hover { background: rgba(250, 248, 242, .72); color: var(--ink); }
+    .rail nav a span { font-family: var(--mono); font-size: 10px; }
+    .rail-foot { color: var(--muted); font-family: var(--mono); font-size: 10px; line-height: 1.7; }
+
+    main { min-width: 0; padding-bottom: 96px; }
+    section { scroll-margin-top: 20px; }
+
+    .hero {
+      min-height: 720px;
+      padding: 48px 0 64px;
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(500px, 1.1fr);
+      gap: 48px;
+      align-items: center;
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      color: var(--blue);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 36px; border-top: 2px solid currentColor; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      margin-bottom: 24px;
+      max-width: 760px;
+      font-family: var(--serif);
+      font-size: clamp(58px, 7.2vw, 112px);
+      font-weight: 500;
+      letter-spacing: -.055em;
+      line-height: .82;
+    }
+    h1 em { color: var(--blue); font-weight: 500; }
+    .hero-copy > p {
+      max-width: 620px;
+      color: #414843;
+      font-size: 18px;
+      line-height: 1.65;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 30px 0; }
+    .button {
+      min-height: 44px;
+      padding: 11px 16px;
+      border: 1px solid var(--ink);
+      border-radius: 9px;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 650;
+      text-decoration: none;
+    }
+    .button.primary { background: var(--ink); color: var(--panel); }
+    .button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(22, 26, 23, .12); }
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      max-width: 660px;
+      border: 1px solid var(--line-strong);
+      background: var(--line-strong);
+    }
+    .hero-stat { padding: 14px; background: var(--panel); }
+    .hero-stat strong { display: block; margin-bottom: 4px; font-size: 24px; letter-spacing: -.04em; }
+    .hero-stat span { color: var(--muted); font-family: var(--mono); font-size: 10px; text-transform: uppercase; }
+
+    .device-plate {
+      position: relative;
+      min-height: 570px;
+      padding: 20px;
+      border: 1px solid var(--ink);
+      border-radius: 28px;
+      background: #d9d5ca;
+      box-shadow: var(--shadow), inset 0 0 0 8px #e6e2d8;
+      overflow: hidden;
+    }
+    .device-plate::after {
+      content: "COMPOSITE USB DEVICE";
+      position: absolute;
+      right: -34px;
+      bottom: 80px;
+      transform: rotate(-90deg);
+      color: rgba(22, 26, 23, .42);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .18em;
+    }
+    .plate-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 4px 4px 20px;
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .plate-top strong { font-family: var(--mono); font-size: 13px; }
+    .plate-top span { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+    .usb-chip {
+      margin: 28px auto;
+      width: min(280px, 75%);
+      padding: 24px;
+      border: 2px solid var(--ink);
+      background: var(--ink);
+      color: white;
+      text-align: center;
+      box-shadow: 10px 10px 0 var(--blue);
+    }
+    .usb-chip small { display: block; margin-bottom: 8px; font-family: var(--mono); letter-spacing: .12em; }
+    .usb-chip strong { font-family: var(--serif); font-size: 28px; font-weight: 500; }
+    .signal-stack { display: grid; gap: 12px; }
+    .signal-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      min-height: 92px;
+      padding: 14px;
+      border: 1px solid var(--ink);
+      background: var(--panel);
+      transition: transform .2s ease;
+    }
+    .signal-row:hover { transform: translateX(-4px); }
+    .signal-index {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      font-family: var(--mono);
+      font-weight: 800;
+    }
+    .signal-row:nth-child(2) .signal-index { background: var(--orange); }
+    .signal-row:nth-child(3) .signal-index { background: var(--green); }
+    .signal-row strong { display: block; font-size: 15px; }
+    .signal-row p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+    .signal-code { text-align: right; font-family: var(--mono); font-size: 10px; }
+    .signal-code b { display: block; margin-bottom: 4px; font-size: 12px; }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr);
+      gap: 28px;
+      padding: 88px 0 38px;
+      border-top: 1px solid var(--line-strong);
+    }
+    .hero + section .section-head { border-top: 0; }
+    .section-number { color: var(--blue); font-family: var(--mono); font-size: 12px; font-weight: 800; }
+    .section-head h2 {
+      margin-bottom: 12px;
+      font-family: var(--serif);
+      font-size: clamp(38px, 5vw, 66px);
+      font-weight: 500;
+      letter-spacing: -.045em;
+      line-height: .96;
+    }
+    .section-head p { max-width: 760px; color: var(--muted); font-size: 17px; }
+
+    .interface-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .interface-card {
+      min-width: 0;
+      min-height: 420px;
+      padding: 22px;
+      border: 1px solid var(--ink);
+      background: var(--panel);
+      box-shadow: 6px 6px 0 var(--paper-2);
+    }
+    .interface-card.config { border-top: 8px solid var(--orange); }
+    .interface-card.keyboard { border-top: 8px solid var(--blue); }
+    .interface-card.pointer { border-top: 8px solid var(--green); }
+    .interface-top { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 32px; }
+    .interface-top span { font-family: var(--mono); font-size: 10px; }
+    .interface-card h3 { margin-bottom: 8px; font-family: var(--serif); font-size: 31px; font-weight: 500; }
+    .interface-card > p { min-height: 66px; color: var(--muted); font-size: 14px; }
+    .code-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      margin: 22px 0;
+      border: 1px solid var(--line);
+      background: var(--line);
+    }
+    .code-pair div { padding: 12px; background: #f3f0e8; }
+    .code-pair small { display: block; color: var(--muted); font-family: var(--mono); font-size: 9px; text-transform: uppercase; }
+    .code-pair strong { display: block; margin-top: 5px; font-family: var(--mono); font-size: 13px; }
+    .bullet-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .bullet-list li { display: flex; gap: 9px; font-size: 13px; }
+    .bullet-list li::before { content: "↳"; color: var(--blue); font-family: var(--mono); }
+    details { margin-top: 20px; border-top: 1px solid var(--line); }
+    summary { padding: 14px 0 4px; cursor: pointer; font-family: var(--mono); font-size: 10px; font-weight: 700; text-transform: uppercase; }
+    details p { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
+
+    .surface-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .surface-card {
+      min-height: 230px;
+      padding: 18px;
+      border: 1px solid var(--line-strong);
+      background: rgba(250, 248, 242, .84);
+    }
+    .surface-card.wide { grid-column: span 2; }
+    .surface-icon { font-size: 28px; line-height: 1; }
+    .surface-card h3 { margin: 28px 0 8px; font-size: 17px; }
+    .surface-card p { color: var(--muted); font-size: 13px; }
+    .surface-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 18px; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 4px 8px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .tag.host { color: var(--blue); }
+    .tag.candidate { color: var(--yellow); }
+    .surface-foot code { color: var(--muted); font-family: var(--mono); font-size: 10px; }
+
+    .catalog-panel {
+      border: 1px solid var(--ink);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .catalog-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      padding: 16px;
+      border-bottom: 1px solid var(--ink);
+      background: rgba(250, 248, 242, .95);
+      backdrop-filter: blur(14px);
+    }
+    .search-row { display: flex; gap: 12px; align-items: center; }
+    .search-wrap { position: relative; flex: 1; }
+    .search-wrap::before { content: "⌕"; position: absolute; top: 10px; left: 14px; color: var(--muted); font-size: 20px; }
+    #action-search {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 14px 10px 42px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: white;
+      color: var(--ink);
+    }
+    .result-count { min-width: 90px; text-align: right; font-family: var(--mono); font-size: 11px; }
+    .filter-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+    .filter-button {
+      min-height: 36px;
+      padding: 7px 11px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: transparent;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 650;
+    }
+    .filter-button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: white; }
+    .catalog-heading, .action-row {
+      display: grid;
+      grid-template-columns: minmax(180px, 1.4fr) .85fr .65fr .75fr minmax(220px, 1.4fr);
+      gap: 16px;
+      align-items: center;
+    }
+    .catalog-heading {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+    .action-row { min-height: 72px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    .action-row:last-child { border-bottom: 0; }
+    .action-row:hover { background: var(--blue-soft); }
+    .action-name strong { display: block; font-size: 14px; }
+    .action-name small { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .action-row code { font-family: var(--mono); font-size: 11px; }
+    .category-chip { width: fit-content; padding: 4px 7px; border-radius: 4px; background: var(--paper-2); font-family: var(--mono); font-size: 9px; text-transform: uppercase; }
+    .action-note { color: var(--muted); font-size: 11px; }
+    .empty-results { padding: 48px; color: var(--muted); text-align: center; }
+
+    .dial-layout { display: grid; grid-template-columns: .82fr 1.18fr; gap: 22px; }
+    .dial-instrument {
+      position: relative;
+      min-height: 600px;
+      padding: 24px;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: white;
+      overflow: hidden;
+    }
+    .dial-instrument::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(90deg, transparent 0 31px, rgba(255,255,255,.04) 32px);
+      pointer-events: none;
+    }
+    .dial-instrument header { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; }
+    .dial-graphic { position: relative; display: grid; place-items: center; height: 390px; }
+    .dial-ring {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 50%;
+      background: repeating-conic-gradient(from -2deg, rgba(255,255,255,.8) 0 1deg, transparent 1deg 9deg);
+    }
+    .dial-ring::after {
+      content: "";
+      position: absolute;
+      inset: 26px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, #525954, #1b201c 64%);
+      box-shadow: inset 0 0 0 20px #242a25, 0 0 0 10px #111;
+    }
+    .dial-ring::before {
+      content: "PRESS";
+      position: absolute;
+      z-index: 2;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .16em;
+    }
+    .dial-direction { position: absolute; top: 50%; color: #fff; font-family: var(--mono); font-size: 11px; }
+    .dial-direction.left { left: 0; }
+    .dial-direction.right { right: 0; }
+    .dial-direction b { display: block; margin-top: 4px; color: #8ca3ff; font-size: 18px; }
+    .dial-readout { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; border: 1px solid #555c56; background: #555c56; }
+    .dial-readout div { padding: 14px; background: #202520; }
+    .dial-readout small { display: block; color: #a9b0aa; font-family: var(--mono); font-size: 8px; text-transform: uppercase; }
+    .dial-readout strong { display: block; margin-top: 7px; font-size: 12px; }
+
+    .evidence-stack { display: grid; gap: 12px; }
+    .evidence-card { padding: 20px; border: 1px solid var(--line-strong); background: var(--panel); }
+    .evidence-card header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+    .evidence-card h3 { margin-bottom: 6px; font-size: 18px; }
+    .evidence-card p { color: var(--muted); font-size: 13px; }
+    .evidence-card dl { display: grid; grid-template-columns: 150px 1fr; gap: 7px 14px; margin: 18px 0 0; font-size: 12px; }
+    .evidence-card dt { color: var(--muted); }
+    .evidence-card dd { margin: 0; font-family: var(--mono); }
+
+    .recipes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 22px; }
+    .recipe { padding: 18px; border: 1px solid var(--line-strong); background: rgba(250, 248, 242, .75); }
+    .recipe small { color: var(--blue); font-family: var(--mono); font-size: 9px; text-transform: uppercase; }
+    .recipe h3 { margin: 18px 0 8px; font-family: var(--serif); font-size: 24px; font-weight: 500; }
+    .recipe ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 12px; }
+
+    .protocol-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 18px; }
+    .report-card { padding: 22px; border: 1px solid var(--ink); background: var(--panel); }
+    .report-bytes { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin: 24px 0; }
+    .byte { min-width: 0; padding: 12px 5px; border: 1px solid var(--line); background: var(--paper); text-align: center; }
+    .byte strong { display: block; font-family: var(--mono); font-size: 12px; }
+    .byte span { display: block; margin-top: 5px; color: var(--muted); font-size: 8px; }
+    .byte.command { background: var(--blue-soft); border-color: var(--blue); }
+    .byte.address { background: var(--orange-soft); border-color: var(--orange); }
+    .byte.payload { background: var(--green-soft); border-color: var(--green); }
+    .byte.checksum { background: var(--yellow-soft); border-color: var(--yellow); }
+    .command-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .command-item { display: flex; justify-content: space-between; gap: 12px; padding: 10px; border-bottom: 1px solid var(--line); font-size: 11px; }
+    .command-item code { font-family: var(--mono); font-weight: 700; }
+    .storage-map { padding: 22px; border: 1px solid var(--ink); background: #202420; color: white; }
+    .storage-map h3 { font-family: var(--serif); font-size: 28px; font-weight: 500; }
+    .storage-item { display: grid; grid-template-columns: 82px 1fr; gap: 12px; padding: 11px 0; border-bottom: 1px solid #454a45; }
+    .storage-item code { color: #8da3ff; font-family: var(--mono); font-size: 10px; }
+    .storage-item strong { display: block; font-size: 11px; }
+    .storage-item span { display: block; margin-top: 4px; color: #aeb4af; font-size: 10px; }
+
+    .boundary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .boundary { padding: 24px; border: 1px solid var(--ink); }
+    .boundary.safe { background: var(--green-soft); }
+    .boundary.blocked { background: var(--red-soft); }
+    .boundary h3 { margin-bottom: 6px; font-family: var(--serif); font-size: 31px; font-weight: 500; }
+    .boundary > p { color: var(--muted); font-size: 13px; }
+    .boundary ul { display: grid; gap: 9px; margin: 22px 0 0; padding: 0; list-style: none; }
+    .boundary li { display: flex; gap: 10px; font-size: 12px; }
+    .boundary.safe li::before { content: "✓"; color: var(--green); font-weight: 900; }
+    .boundary.blocked li::before { content: "×"; color: var(--red); font-weight: 900; }
+
+    footer {
+      margin-top: 88px;
+      padding: 28px 0;
+      border-top: 1px solid var(--ink);
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+    }
+
+    @media (max-width: 1120px) {
+      .shell { grid-template-columns: minmax(0, 1fr); }
+      .rail { position: relative; height: auto; padding-bottom: 0; }
+      .rail, .rail > div, .rail nav { min-width: 0; max-width: 100%; }
+      .rail nav { display: flex; flex-wrap: wrap; margin-top: 20px; }
+      .rail-foot { display: none; }
+      .hero { grid-template-columns: 1fr; }
+      .device-plate { min-height: 520px; }
+      .interface-grid { grid-template-columns: 1fr 1fr; }
+      .interface-card:last-child { grid-column: 1 / -1; min-height: auto; }
+      .surface-grid { grid-template-columns: repeat(3, 1fr); }
+      .dial-layout, .protocol-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 20px, 1480px); gap: 12px; }
+      .rail { padding-top: 16px; }
+      .rail nav { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 8px; }
+      .rail nav a { flex: 0 0 auto; }
+      h1 { font-size: 60px; }
+      .hero { min-height: 0; padding-top: 32px; gap: 28px; }
+      .hero-meta { grid-template-columns: 1fr; }
+      .device-plate { padding: 12px; border-radius: 18px; }
+      .usb-chip { width: calc(100% - 50px); }
+      .signal-row { grid-template-columns: 36px 1fr; }
+      .signal-code { grid-column: 2; text-align: left; }
+      .section-head { grid-template-columns: 1fr; gap: 8px; padding-top: 64px; }
+      .interface-grid, .surface-grid, .recipes, .boundary-grid { grid-template-columns: 1fr; }
+      .interface-card:last-child, .surface-card.wide { grid-column: auto; }
+      .catalog-heading { display: none; }
+      .action-row { grid-template-columns: 1fr auto; gap: 8px 12px; }
+      .action-row > :nth-child(2), .action-row > :nth-child(4) { display: none; }
+      .action-note { grid-column: 1 / -1; }
+      .search-row { align-items: stretch; flex-direction: column; }
+      .result-count { text-align: left; }
+      .dial-instrument { min-height: 520px; }
+      .dial-ring { width: 220px; height: 220px; }
+      .dial-readout { grid-template-columns: 1fr; }
+      .evidence-card dl { grid-template-columns: 1fr; }
+      .evidence-card dd { margin-bottom: 8px; }
+      .report-bytes { grid-template-columns: repeat(4, 1fr); }
+      footer { flex-direction: column; }
+    }
+
+    @media print {
+      body { background: white; }
+      .shell { width: 100%; display: block; }
+      .rail, .hero-actions, .catalog-toolbar { display: none; }
+      .hero { min-height: 0; grid-template-columns: 1fr; page-break-after: always; }
+      .device-plate { box-shadow: none; }
+      .interface-card, .surface-card, .catalog-panel, .evidence-card { break-inside: avoid; box-shadow: none; }
+      .action-row { min-height: 0; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to the guide</a>
+  <div class="shell">
+    <aside class="rail" aria-label="Guide navigation">
+      <div>
+        <div class="rail-mark">Field Guide 01</div>
+        <nav>
+          <a href="#interfaces">Interfaces <span>01</span></a>
+          <a href="#surfaces">What maps <span>02</span></a>
+          <a href="#catalog">Actions <span>03</span></a>
+          <a href="#dial">Dial <span>04</span></a>
+          <a href="#protocol">Protocol <span>05</span></a>
+          <a href="#boundaries">Boundaries <span>06</span></a>
+        </nav>
+      </div>
+      <div class="rail-foot">
+        AIR84@LOFREE<br>
+        USB 05AC:024F<br>
+        FW 1.66 · CID/MID 1/1<br>
+        OBSERVED 2026-07-15
+      </div>
+    </aside>
+
+    <main id="content">
+      <header class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">Lofree Flow Lite 84 · ANSI</div>
+          <h1>HID<br><em>field guide.</em></h1>
+          <p>A visual inventory of every established mapping surface on this keyboard—what the hardware emits, what firmware stores, what Flow Control can safely change, and where a Mac-side helper can go further.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#catalog">Browse all actions</a>
+            <button class="button" type="button" onclick="window.print()">Print reference</button>
+          </div>
+          <div class="hero-meta" aria-label="Device summary">
+            <div class="hero-stat"><strong>3</strong><span>HID interfaces</span></div>
+            <div class="hero-stat"><strong>4 × 84</strong><span>Persistent key maps</span></div>
+            <div class="hero-stat"><strong>15</strong><span>Macro slots</span></div>
+          </div>
+        </div>
+
+        <div class="device-plate" aria-label="Composite USB device diagram">
+          <div class="plate-top">
+            <strong>FLOW LITE 84 / SIGNAL ROUTING</strong>
+            <span>REV 1.66</span>
+          </div>
+          <div class="usb-chip">
+            <small>USB 05AC:024F</small>
+            <strong>Air84@Lofree</strong>
+          </div>
+          <div class="signal-stack">
+            <div class="signal-row">
+              <div class="signal-index">1</div>
+              <div><strong>Keyboard</strong><p>Ordinary keys and modifier output</p></div>
+              <div class="signal-code"><b>01:06</b>8B IN · 1B OUT</div>
+            </div>
+            <div class="signal-row">
+              <div class="signal-index">2</div>
+              <div><strong>Consumer + configuration</strong><p>Media events and persistent vendor protocol</p></div>
+              <div class="signal-code"><b>0C:01 / FF02:02</b>REPORT 08 · 16B</div>
+            </div>
+            <div class="signal-row">
+              <div class="signal-index">3</div>
+              <div><strong>Pointer</strong><p>Mouse buttons, wheel and horizontal pan</p></div>
+              <div class="signal-code"><b>01:02</b>7B IN</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section id="interfaces">
+        <div class="section-head">
+          <div class="section-number">01 / INTERFACES</div>
+          <div>
+            <h2>One cable,<br>three personalities.</h2>
+            <p>The Flow Lite is a composite HID device. Key output, persistent configuration, and pointer-style controls travel through different collections—even though macOS presents them as one keyboard.</p>
+          </div>
+        </div>
+
+        <div class="interface-grid">
+          <article class="interface-card keyboard">
+            <div class="interface-top"><span>INTERFACE 01</span><span>STANDARD HID</span></div>
+            <h3>Keyboard collection</h3>
+            <p>The familiar USB keyboard path. Firmware resolves a physical key through the active OS map and layer, then emits the resulting keyboard usage.</p>
+            <div class="code-pair">
+              <div><small>Usage page</small><strong>0x0001</strong></div>
+              <div><small>Usage</small><strong>0x0006</strong></div>
+              <div><small>Input</small><strong>8 bytes</strong></div>
+              <div><small>Output</small><strong>1 byte</strong></div>
+            </div>
+            <ul class="bullet-list">
+              <li>Standard keyboard usages and eight modifiers</li>
+              <li>Output changes after firmware mapping is applied</li>
+              <li>Input Monitoring protects raw access on macOS</li>
+            </ul>
+            <details><summary>Why this matters</summary><p>A remapped key still looks like a normal keyboard key to every computer. No Flow Control process needs to stay running for persistent key assignments.</p></details>
+          </article>
+
+          <article class="interface-card config">
+            <div class="interface-top"><span>INTERFACE 02</span><span>PERSISTENT CONTROL</span></div>
+            <h3>Consumer + vendor</h3>
+            <p>This shared interface carries media usages and the private configuration channel used to read or write maps, macros, lighting and device settings.</p>
+            <div class="code-pair">
+              <div><small>Primary</small><strong>0C:0001</strong></div>
+              <div><small>Vendor</small><strong>FF02:0002</strong></div>
+              <div><small>Report ID</small><strong>0x08</strong></div>
+              <div><small>Payload</small><strong>16 + 16B</strong></div>
+            </div>
+            <ul class="bullet-list">
+              <li>Four 128-record keymap layers</li>
+              <li>15 macro slots and lighting parameters</li>
+              <li>Battery, firmware, polling and locks</li>
+            </ul>
+            <details><summary>Transaction contract</summary><p>Commands are serialized, checksummed, retried within bounds and every production write is immediately read back. Backups are taken before mutation.</p></details>
+          </article>
+
+          <article class="interface-card pointer">
+            <div class="interface-top"><span>INTERFACE 03</span><span>RELATIVE INPUT</span></div>
+            <h3>Pointer collection</h3>
+            <p>A mouse-like path declared by the same keyboard. It can carry mouse buttons, relative X/Y movement, vertical wheel and horizontal pan.</p>
+            <div class="code-pair">
+              <div><small>Usage page</small><strong>0x0001</strong></div>
+              <div><small>Usage</small><strong>0x0002</strong></div>
+              <div><small>Wheel</small><strong>01:0038</strong></div>
+              <div><small>AC Pan</small><strong>0C:0238</strong></div>
+            </div>
+            <ul class="bullet-list">
+              <li>Five mouse-button bits are declared</li>
+              <li>Wheel and pan are signed relative values</li>
+              <li>Candidate route for the physical roller</li>
+            </ul>
+            <details><summary>Evidence caveat</summary><p>The descriptor proves that the path exists. A live dial capture is still needed to distinguish wheel events from Consumer volume-up/down events.</p></details>
+          </article>
+        </div>
+      </section>
+
+      <section id="surfaces">
+        <div class="section-head">
+          <div class="section-number">02 / SURFACES</div>
+          <div>
+            <h2>What can actually<br>be changed.</h2>
+            <p>Some settings live on the keyboard and travel with it. Others are Mac-side enhancements that work only while Flow Control is running. The distinction is made explicit here.</p>
+          </div>
+        </div>
+
+        <div class="surface-grid">
+          <article class="surface-card wide"><div class="surface-icon">⌨</div><h3>84 physical keys × four maps</h3><p>Windows Base, Windows Fn, macOS Base and macOS Fn are independent. Each physical key points at an action record in firmware.</p><div class="surface-foot"><span class="tag">On keyboard</span><code>4 × 128 × 4B</code></div></article>
+          <article class="surface-card"><div class="surface-icon">⌘</div><h3>Shortcut chords</h3><p>One modifier mask plus one keyboard usage: Control, Option, Shift and Command in any combination.</p><div class="surface-foot"><span class="tag">On keyboard</span><code>family 07</code></div></article>
+          <article class="surface-card"><div class="surface-icon">●</div><h3>15 macros</h3><p>Up to 70 timed press/release events per slot, including balanced multi-shortcut sequences.</p><div class="surface-foot"><span class="tag">On keyboard</span><code>15 × 384B</code></div></article>
+          <article class="surface-card"><div class="surface-icon">◫</div><h3>Consumer controls</h3><p>Volume, playback, brightness, browser, search, mail, calculator and other standard Consumer usages.</p><div class="surface-foot"><span class="tag">On keyboard</span><code>family 03</code></div></article>
+          <article class="surface-card"><div class="surface-icon">◎</div><h3>Mouse buttons</h3><p>Left, right, middle, back and forward can be assigned to ordinary keys through the pointer interface.</p><div class="surface-foot"><span class="tag">On keyboard</span><code>family 0A</code></div></article>
+          <article class="surface-card"><div class="surface-icon">☼</div><h3>White backlight</h3><p>Eight verified effect values, five brightness levels, five speed levels where supported and an off timer.</p><div class="surface-foot"><span class="tag">On keyboard</span><code>8496+</code></div></article>
+          <article class="surface-card"><div class="surface-icon">↯</div><h3>Device behaviour</h3><p>125–1000 Hz polling, current OS mode, Fn lock, full-key lock and backlight timeout.</p><div class="surface-foot"><span class="tag">On keyboard</span><code>9408+</code></div></article>
+          <article class="surface-card"><div class="surface-icon">◒</div><h3>Roller directions</h3><p>Likely interceptable through the Consumer or pointer interface. Exact live event remains to be captured.</p><div class="surface-foot"><span class="tag host">Mac helper</span><code>candidate</code></div></article>
+          <article class="surface-card"><div class="surface-icon">⦿</div><h3>Roller press</h3><p>Hidden firmware slot 83 defaults to Mute on every map. A strong persistent-remap candidate pending live confirmation.</p><div class="surface-foot"><span class="tag candidate">Candidate</span><code>slot 83</code></div></article>
+          <article class="surface-card wide"><div class="surface-icon">⇄</div><h3>Profiles and backups</h3><p>JSON import/export plus automatic snapshots before a device write. Profiles include keymaps, lighting, macros and device settings.</p><div class="surface-foot"><span class="tag host">Mac storage</span><code>versioned JSON</code></div></article>
+        </div>
+      </section>
+
+      <section id="catalog">
+        <div class="section-head">
+          <div class="section-number">03 / ACTIONS</div>
+          <div>
+            <h2>The complete<br>action catalog.</h2>
+            <p>Search every action encoding currently considered safe for the Flow Lite 84. Macro slots are listed individually; shortcut chords are generated from the keyboard usages and modifier mask.</p>
+          </div>
+        </div>
+
+        <div class="catalog-panel">
+          <div class="catalog-toolbar">
+            <div class="search-row">
+              <label class="search-wrap"><span class="skip-link">Search actions</span><input id="action-search" type="search" placeholder="Search by name, category, family or HID value…" autocomplete="off"></label>
+              <div class="result-count" id="result-count" aria-live="polite">— actions</div>
+            </div>
+            <div class="filter-row" id="filters" aria-label="Action category filters"></div>
+          </div>
+          <div class="catalog-heading"><span>Action</span><span>Category</span><span>Family</span><span>Value</span><span>What it does</span></div>
+          <div id="action-list"></div>
+        </div>
+      </section>
+
+      <section id="dial">
+        <div class="section-head">
+          <div class="section-number">04 / DIAL</div>
+          <div>
+            <h2>The roller is<br>its own problem.</h2>
+            <p>It is not drawn as one of the 84 keys, so it needs a dedicated model: two relative directions and possibly one press. Rotation and press may use different HID interfaces.</p>
+          </div>
+        </div>
+
+        <div class="dial-layout">
+          <article class="dial-instrument">
+            <header><span>PHYSICAL CONTROL / 01</span><span>LIVE SIGNAL PENDING</span></header>
+            <div class="dial-graphic">
+              <div class="dial-direction left">TURN LEFT<b>↶</b></div>
+              <div class="dial-ring" aria-hidden="true"></div>
+              <div class="dial-direction right">TURN RIGHT<b>↷</b></div>
+            </div>
+            <div class="dial-readout">
+              <div><small>Direction A</small><strong>Wheel − / Volume − ?</strong></div>
+              <div><small>Press</small><strong>Slot 83 / Mute ?</strong></div>
+              <div><small>Direction B</small><strong>Wheel + / Volume + ?</strong></div>
+            </div>
+          </article>
+
+          <div class="evidence-stack">
+            <article class="evidence-card">
+              <header><div><h3>Rotation</h3><p>No official configuration record has been found for the two directions. A source-specific Mac remapper is therefore the leading implementation.</p></div><span class="tag host">Host-side</span></header>
+              <dl><dt>Candidate interface</dt><dd>01:02 wheel ± / 0C:01 volume ±</dd><dt>Persistence</dt><dd>Requires Flow Control running</dd><dt>Best interception</dt><dd>Exact VID/PID + interface match</dd><dt>Permission</dt><dd>Input Monitoring + Accessibility</dd></dl>
+            </article>
+            <article class="evidence-card">
+              <header><div><h3>Press</h3><p>The CID/MID 1 Windows file contains hidden record 83, labelled Mute and set to Consumer usage E2 on all six generic maps.</p></div><span class="tag candidate">Strong candidate</span></header>
+              <dl><dt>Candidate record</dt><dd>slot 83</dd><dt>Factory action</dt><dd>family 03 / value 00E2</dd><dt>Possible persistence</dt><dd>On keyboard</dd><dt>Proof still needed</dt><dd>Press → event correlation</dd></dl>
+            </article>
+            <article class="evidence-card">
+              <header><div><h3>Recommended UI</h3><p>A separate Dial page with Turn Left, Turn Right and Press—not a fake extra key inside the 84-key layout.</p></div><span class="tag">Design-ready</span></header>
+              <dl><dt>Live test</dt><dd>Signal indicator + event label</dd><dt>Safe default</dt><dd>Pass through unchanged</dd><dt>Emergency fallback</dt><dd>Disable host remapper</dd><dt>Per-app mappings</dt><dd>Optional Mac-only layer</dd></dl>
+            </article>
+          </div>
+        </div>
+
+        <div class="recipes" aria-label="Example dial mappings">
+          <article class="recipe"><small>Creative tools</small><h3>Timeline control</h3><ul><li>Left/right: frame or timeline scrub</li><li>Press: play/pause</li><li>Alternate layer: zoom timeline</li></ul></article>
+          <article class="recipe"><small>Figma & design</small><h3>Canvas control</h3><ul><li>Left/right: zoom out/in</li><li>Press: zoom to selection</li><li>Modifier: change nudge precision</li></ul></article>
+          <article class="recipe"><small>System</small><h3>Media control</h3><ul><li>Left/right: volume down/up</li><li>Press: mute</li><li>Alternate layer: previous/next track</li></ul></article>
+          <article class="recipe"><small>Navigation</small><h3>Fast travel</h3><ul><li>Left/right: previous/next tab</li><li>Press: close tab</li><li>Alternate layer: desktop switching</li></ul></article>
+          <article class="recipe"><small>Development</small><h3>Editor motion</h3><ul><li>Left/right: jump diagnostic</li><li>Press: quick fix</li><li>Alternate layer: undo/redo</li></ul></article>
+          <article class="recipe"><small>Accessibility</small><h3>Large controls</h3><ul><li>Left/right: display zoom</li><li>Press: reset zoom</li><li>Detent-based repeat tuning</li></ul></article>
+        </div>
+      </section>
+
+      <section id="protocol">
+        <div class="section-head">
+          <div class="section-number">05 / PROTOCOL</div>
+          <div>
+            <h2>How persistent<br>changes travel.</h2>
+            <p>The private report-8 protocol moves ten data bytes per transaction. Keymaps and settings are flash-backed; production writes are range-limited and verified against immediate readback.</p>
+          </div>
+        </div>
+
+        <div class="protocol-grid">
+          <article class="report-card">
+            <h3>Report 08 / 16-byte payload</h3>
+            <div class="report-bytes" aria-label="Report byte layout">
+              <div class="byte command"><strong>00</strong><span>command</span></div>
+              <div class="byte"><strong>01</strong><span>status</span></div>
+              <div class="byte address"><strong>02</strong><span>addr hi</span></div>
+              <div class="byte address"><strong>03</strong><span>addr lo</span></div>
+              <div class="byte"><strong>04</strong><span>flags + len</span></div>
+              <div class="byte payload"><strong>05</strong><span>data 0</span></div>
+              <div class="byte payload"><strong>06</strong><span>data 1</span></div>
+              <div class="byte payload"><strong>07</strong><span>data 2</span></div>
+              <div class="byte payload"><strong>08</strong><span>data 3</span></div>
+              <div class="byte payload"><strong>09</strong><span>data 4</span></div>
+              <div class="byte payload"><strong>10</strong><span>data 5</span></div>
+              <div class="byte payload"><strong>11</strong><span>data 6</span></div>
+              <div class="byte payload"><strong>12</strong><span>data 7</span></div>
+              <div class="byte payload"><strong>13</strong><span>data 8</span></div>
+              <div class="byte payload"><strong>14</strong><span>data 9</span></div>
+              <div class="byte checksum"><strong>15</strong><span>checksum</span></div>
+            </div>
+            <div class="command-list">
+              <div class="command-item"><span>Identity</span><code>0x01</code></div><div class="command-item"><span>Online state</span><code>0x03</code></div>
+              <div class="command-item"><span>Battery</span><code>0x04</code></div><div class="command-item"><span>Flash write</span><code>0x07</code></div>
+              <div class="command-item"><span>Flash read</span><code>0x08</code></div><div class="command-item"><span>Current profile</span><code>0x0E</code></div>
+              <div class="command-item"><span>Device version</span><code>0x12</code></div><div class="command-item"><span>Maximum chunk</span><code>10 bytes</code></div>
+            </div>
+          </article>
+
+          <article class="storage-map">
+            <h3>Verified storage map</h3>
+            <div class="storage-item"><code>0000</code><div><strong>Windows Base</strong><span>128 × 4-byte key records</span></div></div>
+            <div class="storage-item"><code>0200</code><div><strong>Windows Fn</strong><span>128 × 4-byte key records</span></div></div>
+            <div class="storage-item"><code>0600</code><div><strong>macOS Base</strong><span>128 × 4-byte key records</span></div></div>
+            <div class="storage-item"><code>0800</code><div><strong>macOS Fn</strong><span>128 × 4-byte key records</span></div></div>
+            <div class="storage-item"><code>1820</code><div><strong>Custom light map</strong><span>128 × 10 bytes · read-only</span></div></div>
+            <div class="storage-item"><code>2130</code><div><strong>Light selection</strong><span>mode, enabled state and timeout</span></div></div>
+            <div class="storage-item"><code>2160+</code><div><strong>Effect parameters</strong><span>16 × 32-byte records</span></div></div>
+            <div class="storage-item"><code>24C0+</code><div><strong>Device settings</strong><span>polling, OS, Fn lock, key lock</span></div></div>
+            <div class="storage-item"><code>2750+</code><div><strong>Macros</strong><span>15 × 384-byte slots</span></div></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="boundaries">
+        <div class="section-head">
+          <div class="section-number">06 / BOUNDARIES</div>
+          <div>
+            <h2>Supported does not<br>mean “send anything.”</h2>
+            <p>The original web mapper had a firmware-corruption history. Flow Control separates ordinary configuration from recovery-sensitive commands and generic features not proven on this exact CID/MID.</p>
+          </div>
+        </div>
+
+        <div class="boundary-grid">
+          <article class="boundary safe"><h3>Safe, verified surface</h3><p>Backed by exact encoding evidence and device readback.</p><ul><li>Four 84-key maps and established action families</li><li>Shortcut chords and one-shot macro assignments</li><li>15 macro slots with timed press/release events</li><li>Built-in white-light modes and five-level controls</li><li>Polling, OS mode, Fn lock, keyboard lock and off timer</li><li>Backups, scoped writes and immediate verification</li></ul></article>
+          <article class="boundary blocked"><h3>Intentionally excluded</h3><p>Unverified, destructive, variant-specific or unsupported by this hardware.</p><ul><li>Firmware update, bootloader entry and recovery writes</li><li>Receiver pairing, factory reset and clear operations</li><li>Generic iOS, Android and Fn2 storage</li><li>Per-key RGB claims on white-backlight hardware</li><li>Custom-light writes and simulated frame streaming</li><li>Unverified repeat-until-release macro encoding</li></ul></article>
+        </div>
+      </section>
+
+      <footer>
+        <span>FLOW LITE 84 HID FIELD GUIDE / LOCAL REFERENCE</span>
+        <span>Observed hardware: Air84@Lofree · 05AC:024F · firmware 1.66 · CID/MID 1/1</span>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    const keyboardActions = [
+      ["Esc", "29"], ["F1", "3A"], ["F2", "3B"], ["F3", "3C"], ["F4", "3D"], ["F5", "3E"], ["F6", "3F"], ["F7", "40"], ["F8", "41"], ["F9", "42"], ["F10", "43"], ["F11", "44"], ["F12", "45"],
+      ["Print Screen", "46"], ["Insert", "49"], ["Delete", "4C"], ["`", "35"], ["1", "1E"], ["2", "1F"], ["3", "20"], ["4", "21"], ["5", "22"], ["6", "23"], ["7", "24"], ["8", "25"], ["9", "26"], ["0", "27"], ["-", "2D"], ["=", "2E"], ["Backspace", "2A"], ["Home", "4A"],
+      ["Tab", "2B"], ["Q", "14"], ["W", "1A"], ["E", "08"], ["R", "15"], ["T", "17"], ["Y", "1C"], ["U", "18"], ["I", "0C"], ["O", "12"], ["P", "13"], ["[", "2F"], ["]", "30"], ["\\", "31"], ["End", "4D"],
+      ["Caps Lock", "39"], ["A", "04"], ["S", "16"], ["D", "07"], ["F", "09"], ["G", "0A"], ["H", "0B"], ["J", "0D"], ["K", "0E"], ["L", "0F"], [";", "33"], ["'", "34"], ["Enter", "28"], ["Page Up", "4B"],
+      ["Z", "1D"], ["X", "1B"], ["C", "06"], ["V", "19"], ["B", "05"], ["N", "11"], ["M", "10"], [",", "36"], [".", "37"], ["/", "38"], ["Arrow Up", "52"], ["Page Down", "4E"], ["Space", "2C"], ["Arrow Left", "50"], ["Arrow Down", "51"], ["Arrow Right", "4F"]
+    ];
+
+    const modifierActions = [
+      ["Left Control", "01"], ["Left Shift", "02"], ["Left Alt / Option", "04"], ["Left Windows / Command", "08"],
+      ["Right Control", "10"], ["Right Shift", "20"], ["Right Alt / Option", "40"], ["Right Windows / Command", "80"]
+    ];
+
+    const mediaActions = [
+      ["Player", "0183"], ["Play / Pause", "00CD"], ["Next Track", "00B5"], ["Previous Track", "00B6"], ["Stop", "00B7"], ["Mute", "00E2"], ["Volume Up", "00E9"], ["Volume Down", "00EA"],
+      ["Mail", "018A"], ["Calculator", "0192"], ["My Computer", "0194"], ["Home Page", "0223"], ["Search", "0221"], ["Browser Forward", "0225"], ["Browser Back", "0224"], ["Stop Web Page", "0226"], ["Refresh", "0227"], ["Favorites", "022A"], ["Screen Brightness Down", "0070"], ["Screen Brightness Up", "006F"]
+    ];
+
+    const deviceActions = [
+      ["Bluetooth 1", "0000"], ["Bluetooth 2", "0001"], ["Bluetooth 3", "0002"], ["2.4 GHz", "0003"], ["Light Mode Cycle +", "0004"], ["Light Mode +", "0005"], ["Light Mode -", "0006"], ["Light Speed Cycle", "000B"], ["Light Speed +", "000C"], ["Light Speed -", "000D"], ["Light Brightness Cycle", "000E"], ["Light Brightness +", "000F"], ["Light Brightness -", "0010"], ["Check Battery", "0011"], ["Light Switch", "0012"], ["Fn Lock", "0013"], ["Wired", "0015"], ["Restore", "0017"], ["Windows Mode", "0018"], ["macOS Mode", "0019"], ["Full Keyboard Lock", "0022"], ["Light Mode Cycle -", "0031"]
+    ];
+
+    const mouseActions = [
+      ["Mouse Left", "0001"], ["Mouse Right", "0002"], ["Mouse Middle", "0004"], ["Mouse Back", "0008"], ["Mouse Forward", "0010"]
+    ];
+
+    const makeAction = (name, category, family, value, note, detail = "") => ({ name, category, family, value, note, detail });
+    const actions = [
+      makeAction("Disabled", "Basic", "00", "0000", "Makes the selected physical key inert.", "persistent"),
+      ...keyboardActions.map(([name, value]) => makeAction(name, Number.parseInt(value, 16) >= 0x46 && Number.parseInt(value, 16) <= 0x52 ? "Navigation" : "Basic", "02", value.padStart(4, "0"), "Emits the standard USB keyboard usage.", "keyboard")),
+      ...modifierActions.map(([name, value]) => makeAction(name, "Modifiers", "01", value.padStart(4, "0"), "Emits a dedicated modifier bit.", "keyboard")),
+      ...mediaActions.map(([name, value]) => makeAction(name, "Media", "03", value, "Emits a standard Consumer control usage.", "consumer")),
+      ...deviceActions.map(([name, value]) => makeAction(name, "Device", "05", value, "Runs a keyboard-firmware action.", "device")),
+      makeAction("Fn", "Modifiers", "06", "0001", "Activates the Windows-style firmware Fn layer.", "layer"),
+      makeAction("Mac Fn", "Modifiers", "06", "0002", "Activates the macOS firmware Fn layer.", "layer"),
+      makeAction("Shortcut chord", "Constructs", "07", "MMKK", "Any non-zero modifier mask plus one ordinary keyboard usage.", "generated"),
+      makeAction("Screenshot (⇧⌘3)", "Constructs", "07", "200A", "Verified factory macOS screenshot chord.", "generated"),
+      ...mouseActions.map(([name, value]) => makeAction(name, "Mouse", "0A", value, "Emits a mouse-button action through the pointer interface.", "pointer")),
+      ...Array.from({ length: 15 }, (_, index) => makeAction(`Macro ${index + 1}`, "Macros", "08", `01${index.toString(16).padStart(2, "0").toUpperCase()}`, `Runs macro slot ${index + 1} once.`, "macro"))
+    ];
+
+    const categoryOrder = ["All", "Basic", "Navigation", "Modifiers", "Media", "Device", "Mouse", "Constructs", "Macros"];
+    const filters = document.querySelector("#filters");
+    const search = document.querySelector("#action-search");
+    const list = document.querySelector("#action-list");
+    const count = document.querySelector("#result-count");
+    let activeCategory = "All";
+
+    for (const category of categoryOrder) {
+      const button = document.createElement("button");
+      button.className = "filter-button";
+      button.type = "button";
+      button.textContent = category;
+      button.setAttribute("aria-pressed", category === activeCategory ? "true" : "false");
+      button.addEventListener("click", () => {
+        activeCategory = category;
+        for (const item of filters.children) item.setAttribute("aria-pressed", item === button ? "true" : "false");
+        renderActions();
+      });
+      filters.append(button);
+    }
+
+    const escapeHTML = (value) => value.replace(/[&<>'"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]);
+
+    function renderActions() {
+      const query = search.value.trim().toLowerCase();
+      const visible = actions.filter(action => {
+        const categoryMatches = activeCategory === "All" || action.category === activeCategory;
+        const queryMatches = !query || `${action.name} ${action.category} ${action.family} ${action.value} ${action.note}`.toLowerCase().includes(query);
+        return categoryMatches && queryMatches;
+      });
+
+      count.textContent = `${visible.length} / ${actions.length}`;
+      if (!visible.length) {
+        list.innerHTML = '<div class="empty-results">No established action matches that search.</div>';
+        return;
+      }
+
+      list.innerHTML = visible.map(action => `
+        <article class="action-row">
+          <div class="action-name"><strong>${escapeHTML(action.name)}</strong><small>${action.detail === "generated" ? "Generated value" : "Verified catalog entry"}</small></div>
+          <span class="category-chip">${escapeHTML(action.category)}</span>
+          <code>0x${action.family}</code>
+          <code>0x${action.value}</code>
+          <span class="action-note">${escapeHTML(action.note)}</span>
+        </article>
+      `).join("");
+    }
+
+    search.addEventListener("input", renderActions);
+    renderActions();
+  </script>
+</body>
+</html>
