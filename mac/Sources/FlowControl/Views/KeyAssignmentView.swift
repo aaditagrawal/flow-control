@@ -106,11 +106,6 @@ private struct KeyboardCanvasView: View {
                 ForEach(Array(KeyboardLayout.rows.enumerated()), id: \.offset) { _, row in
                     HStack(spacing: KeyboardCanvasLayout.keySpacing) {
                         ForEach(row) { key in
-                            if key.spacerBefore > 0 {
-                                Color.clear
-                                    .frame(width: CGFloat(key.spacerBefore) * KeyboardCanvasLayout.keyUnit)
-                                    .accessibilityHidden(true)
-                            }
                             KeyboardKeyView(
                                 key: key,
                                 action: currentAction(for: key.id),
@@ -118,6 +113,10 @@ private struct KeyboardCanvasView: View {
                             ) {
                                 store.selectedKeyID = key.id
                             }
+                            .padding(
+                                .leading,
+                                CGFloat(key.spacerBefore) * KeyboardCanvasLayout.keyUnit
+                            )
                         }
                     }
                 }

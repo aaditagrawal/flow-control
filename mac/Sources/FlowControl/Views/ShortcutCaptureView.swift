@@ -10,25 +10,52 @@ struct ShortcutCaptureView: View {
     @State private var isRecording = false
 
     var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            captureSurface
+
+            Text("Use at least one modifier plus a key. Escape cancels.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private var captureSurface: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 7)
+            RoundedRectangle(cornerRadius: 9)
                 .fill(isRecording ? Color.accentColor.opacity(0.16) : Color.secondary.opacity(0.08))
-            RoundedRectangle(cornerRadius: 7)
+            RoundedRectangle(cornerRadius: 9)
                 .stroke(isRecording ? Color.accentColor : Color.secondary.opacity(0.28), lineWidth: isRecording ? 2 : 1)
 
-            HStack(spacing: 8) {
-                Image(systemName: isRecording ? "record.circle.fill" : "keyboard.badge.ellipsis")
-                    .foregroundStyle(isRecording ? Color.accentColor : Color.secondary)
-                Text(captureTitle)
-                    .fontWeight(.medium)
-                Spacer()
-                if !isRecording {
-                    Text("Click, then press shortcut")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 8) {
+                    captureIcon
+                    Text(captureTitle)
+                        .fontWeight(.semibold)
+                        .lineLimit(1)
+                    Spacer(minLength: 12)
+                    if !isRecording {
+                        Text("Click, then press shortcut")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+
+                HStack(spacing: 8) {
+                    captureIcon
+                    Text(compactCaptureTitle)
+                        .fontWeight(.semibold)
+                        .lineLimit(1)
+                    Spacer(minLength: 8)
+                    if !isRecording {
+                        Text("Click to record")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
                 }
             }
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 12)
 
             ShortcutCaptureBridge(
                 modifierMask: $modifierMask,
@@ -37,14 +64,15 @@ struct ShortcutCaptureView: View {
                 captured: captured
             )
         }
-        .frame(height: 38)
+        .frame(height: 42)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityTitle)
         .accessibilityValue(isRecording ? "Press a shortcut now" : "Click to start recording")
+    }
 
-        Text("Press at least one modifier plus a key. Escape cancels.")
-            .font(.caption)
-            .foregroundStyle(.secondary)
+    private var captureIcon: some View {
+        Image(systemName: isRecording ? "record.circle.fill" : "keyboard.badge.ellipsis")
+            .foregroundStyle(isRecording ? Color.accentColor : Color.secondary)
     }
 
     private var captureTitle: String {
@@ -55,6 +83,11 @@ struct ShortcutCaptureView: View {
             return targetLabel.map { "Record & Install for \($0)" } ?? "Record & Install Shortcut"
         }
         return targetLabel.map { "Record shortcut for \($0)" } ?? "Record Shortcut"
+    }
+
+    private var compactCaptureTitle: String {
+        if isRecording { return "Press shortcut…" }
+        return installsOnCapture ? "Record & Install" : "Record Shortcut"
     }
 
     private var accessibilityTitle: String {

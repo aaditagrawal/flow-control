@@ -54,6 +54,19 @@ enum ActionCategory: String, CaseIterable, Codable, Identifiable {
     case mouse = "Mouse"
 
     var id: String { rawValue }
+
+    var systemImage: String {
+        switch self {
+        case .basic: "textformat"
+        case .shortcut: "command"
+        case .modifier: "option"
+        case .media: "play.rectangle"
+        case .navigation: "arrow.up.left.and.arrow.down.right"
+        case .macro: "record.circle"
+        case .device: "keyboard"
+        case .mouse: "computermouse"
+        }
+    }
 }
 
 struct KeyAction: Codable, Hashable, Identifiable {

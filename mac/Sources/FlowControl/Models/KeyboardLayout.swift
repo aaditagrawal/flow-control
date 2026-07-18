@@ -19,7 +19,7 @@ enum KeyboardLayout {
     static let rows: [[PhysicalKey]] = [
         [
             PhysicalKey("escape", "Esc"),
-            PhysicalKey("f1", "F1", spacerBefore: 0.5),
+            PhysicalKey("f1", "F1"),
             PhysicalKey("f2", "F2"),
             PhysicalKey("f3", "F3"),
             PhysicalKey("f4", "F4"),
@@ -31,7 +31,7 @@ enum KeyboardLayout {
             PhysicalKey("f10", "F10"),
             PhysicalKey("f11", "F11"),
             PhysicalKey("f12", "F12"),
-            PhysicalKey("print-screen", "PrtSc", spacerBefore: 0.5),
+            PhysicalKey("print-screen", "PrtSc"),
             PhysicalKey("insert", "Ins"),
             PhysicalKey("delete", "Del"),
         ],
@@ -50,7 +50,7 @@ enum KeyboardLayout {
             PhysicalKey("digit-minus", "-"),
             PhysicalKey("digit-equal", "="),
             PhysicalKey("backspace", "Backspace", width: 2),
-            PhysicalKey("home", "Home", spacerBefore: 1),
+            PhysicalKey("home", "Home"),
         ],
         [
             PhysicalKey("tab", "Tab", width: 1.5),
@@ -67,7 +67,7 @@ enum KeyboardLayout {
             PhysicalKey("bracket-left", "["),
             PhysicalKey("bracket-right", "]"),
             PhysicalKey("backslash", "\\", width: 1.5),
-            PhysicalKey("end", "End", spacerBefore: 1),
+            PhysicalKey("end", "End"),
         ],
         [
             PhysicalKey("caps-lock", "Caps", width: 1.75),
@@ -83,7 +83,7 @@ enum KeyboardLayout {
             PhysicalKey("semicolon", ";"),
             PhysicalKey("quote", "'"),
             PhysicalKey("enter", "Enter", width: 2.25),
-            PhysicalKey("page-up", "PgUp", spacerBefore: 1),
+            PhysicalKey("page-up", "PgUp"),
         ],
         [
             PhysicalKey("shift-left", "Shift", width: 2.25),
@@ -99,7 +99,7 @@ enum KeyboardLayout {
             PhysicalKey("slash", "/"),
             PhysicalKey("shift-right", "Shift", width: 1.75),
             PhysicalKey("arrow-up", "↑"),
-            PhysicalKey("page-down", "PgDn", spacerBefore: 1),
+            PhysicalKey("page-down", "PgDn"),
         ],
         [
             PhysicalKey("control-left", "Ctrl", width: 1.25),
@@ -109,7 +109,7 @@ enum KeyboardLayout {
             PhysicalKey("alt-right", "Alt/⌘", width: 1.25),
             PhysicalKey("fn", "Fn", width: 1.25),
             PhysicalKey("control-right", "Ctrl", width: 1.25),
-            PhysicalKey("arrow-left", "←", spacerBefore: 0.25),
+            PhysicalKey("arrow-left", "←"),
             PhysicalKey("arrow-down", "↓"),
             PhysicalKey("arrow-right", "→"),
         ],

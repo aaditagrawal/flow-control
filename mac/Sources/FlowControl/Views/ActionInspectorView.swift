@@ -7,55 +7,73 @@ struct ActionInspectorView: View {
     @State private var shortcutModifierMask: UInt8 = FlowShortcutModifier.command.rawValue
     @State private var shortcutKeyUsage: UInt8 = 0x04
     @State private var shortcutInstallState: ShortcutInstallState = .idle
+    @State private var showsActionBrowser = false
+    @State private var showsSpecialMappings = true
+    @State private var showsAllSpecialMappings = false
 
     var body: some View {
         @Bindable var store = store
 
         List {
             inspectorSummary
-                .inspectorControlRow(top: 10, bottom: 6)
+                .inspectorControlRow(top: 14, bottom: 8)
 
             if let factoryDefaultAction {
                 factoryResetButton(factoryDefaultAction)
-                    .inspectorControlRow(top: 2, bottom: 6)
+                    .inspectorControlRow(top: 2, bottom: 10)
             }
 
             shortcutComposer
-                .inspectorControlRow(top: 2, bottom: 8)
+                .inspectorControlRow(top: 0, bottom: 12)
 
             shortcutInstallStatus
-                .inspectorControlRow(top: 0, bottom: 8)
+                .inspectorControlRow(top: 0, bottom: 12)
 
             if shortcutInstallState == .idle, selectedKeyHasPendingChange, let currentAction {
                 pendingChange(currentAction)
-                    .inspectorControlRow(top: 0, bottom: 8)
+                    .inspectorControlRow(top: 0, bottom: 12)
             }
 
             macroHint
-                .inspectorControlRow(top: 0, bottom: 6)
+                .inspectorControlRow(top: 0, bottom: 12)
 
-            TextField("Search actions", text: $store.searchText)
-                .textFieldStyle(.roundedBorder)
-                .accessibilityLabel("Search available key actions")
-                .inspectorControlRow(top: 2, bottom: 6)
+            specialMappingsCard
+                .inspectorControlRow(top: 0, bottom: 10)
 
-            Picker("Other Actions", selection: $category) {
-                Text("All Actions").tag(ActionCategory?.none)
-                ForEach(ActionCategory.allCases) { item in
-                    Text(item.rawValue).tag(Optional(item))
+            actionBrowserToggle
+                .inspectorControlRow(top: 0, bottom: showsActionBrowser ? 8 : 14)
+
+            if showsActionBrowser {
+                actionBrowserControls
+                    .inspectorControlRow(top: 0, bottom: 12)
+
+                ForEach(groupedActions) { group in
+                    Section {
+                        ForEach(group.actions) { action in
+                            Button {
+                                shortcutInstallState = .idle
+                                store.assign(action)
+                            } label: {
+                                ActionChoiceRow(action: action, isCurrent: isCurrent(action))
+                            }
+                            .buttonStyle(.plain)
+                            .listRowInsets(EdgeInsets(top: 2, leading: 12, bottom: 2, trailing: 12))
+                            .listRowSeparator(.hidden)
+                        }
+                    } header: {
+                        HStack(spacing: 7) {
+                            Label(group.category.rawValue, systemImage: group.category.systemImage)
+                            Spacer()
+                            Text(group.actions.count, format: .number)
+                                .monospacedDigit()
+                                .foregroundStyle(.tertiary)
+                        }
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .textCase(nil)
+                        .padding(.top, 4)
+                    }
                 }
-            }
-            .inspectorControlRow(top: 0, bottom: 8)
-
-            ForEach(filteredActions) { action in
-                Button {
-                    shortcutInstallState = .idle
-                    store.assign(action)
-                } label: {
-                    ActionChoiceRow(action: action, isCurrent: isCurrent(action))
-                }
-                .buttonStyle(.plain)
-                .listRowInsets(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
             }
         }
         .listStyle(.plain)
@@ -121,7 +139,7 @@ struct ActionInspectorView: View {
     }
 
     private var shortcutComposer: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             Label("Shortcut for \(selectedKeyLabel)", systemImage: "command")
                 .font(.subheadline.weight(.semibold))
 
@@ -135,8 +153,12 @@ struct ActionInspectorView: View {
                 installShortcut(shortcut)
             }
         }
-        .padding(10)
-        .background(Color.secondary.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
+        .padding(12)
+        .background(Color.secondary.opacity(0.07), in: RoundedRectangle(cornerRadius: 12))
+        .overlay {
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.secondary.opacity(0.10), lineWidth: 1)
+        }
         .disabled(shortcutInstallState.isInstalling || store.isBusy)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("action-inspector.shortcut-composer")
@@ -169,16 +191,213 @@ struct ActionInspectorView: View {
     }
 
     private var macroHint: some View {
-        HStack {
-            Text("For multiple shortcuts, build a macro and assign it here.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            Spacer()
-            Button("Macros") {
-                store.selection = .macros
+        Button {
+            store.selection = .macros
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "rectangle.stack")
+                    .frame(width: 20, alignment: .center)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Multiple shortcuts")
+                        .font(.subheadline.weight(.semibold))
+                    Text("Build a macro, then assign it to this key")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 16, alignment: .trailing)
             }
-            .buttonStyle(.link)
+            .foregroundStyle(.primary)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(Color.secondary.opacity(0.045), in: RoundedRectangle(cornerRadius: 10))
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+    }
+
+    private var actionBrowserControls: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Picker("Category", selection: $category) {
+                Text("All Categories").tag(ActionCategory?.none)
+                ForEach(ActionCategory.allCases) { item in
+                    Text(item.rawValue).tag(Optional(item))
+                }
+            }
+            .pickerStyle(.menu)
+
+            TextField("Search actions", text: searchTextBinding)
+                .textFieldStyle(.roundedBorder)
+                .accessibilityLabel("Search available key actions")
+        }
+        .padding(12)
+        .background(Color.secondary.opacity(0.07), in: RoundedRectangle(cornerRadius: 12))
+        .overlay {
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.secondary.opacity(0.10), lineWidth: 1)
+        }
+    }
+
+    private var actionBrowserToggle: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.18)) {
+                showsActionBrowser.toggle()
+            }
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "square.grid.2x2")
+                    .frame(width: 20, alignment: .center)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Browse all actions")
+                        .font(.subheadline.weight(.semibold))
+                    Text("Basic keys and every available assignment")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 16, alignment: .trailing)
+                    .rotationEffect(.degrees(showsActionBrowser ? 90 : 0))
+            }
+            .foregroundStyle(.primary)
+            .padding(12)
+            .background(Color.secondary.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+            .overlay {
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color.secondary.opacity(0.10), lineWidth: 1)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityValue(showsActionBrowser ? "Expanded" : "Collapsed")
+    }
+
+    private var specialMappingsCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.18)) {
+                    showsSpecialMappings.toggle()
+                }
+            } label: {
+                HStack(spacing: 10) {
+                    Image(systemName: "list.bullet.rectangle")
+                        .frame(width: 20, alignment: .center)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Special mappings")
+                            .font(.subheadline.weight(.semibold))
+                        Text("\(store.selectedSystem.title) • \(store.selectedLayer.title)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Text(specialMappings.count, format: .number)
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 3)
+                        .background(Color.secondary.opacity(0.08), in: Capsule())
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .frame(width: 16, alignment: .trailing)
+                        .rotationEffect(.degrees(showsSpecialMappings ? 90 : 0))
+                }
+                .foregroundStyle(.primary)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityValue(showsSpecialMappings ? "Expanded" : "Collapsed")
+
+            if showsSpecialMappings {
+                Divider()
+
+                if specialMappings.isEmpty {
+                    Text("No shortcut, media, macro, modifier, or device actions are assigned on this layer.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(visibleSpecialMappings) { mapping in
+                        Button {
+                            shortcutInstallState = .idle
+                            store.selectedKeyID = mapping.key.id
+                        } label: {
+                            HStack(spacing: 9) {
+                                Text(mapping.key.label)
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.primary)
+                                    .lineLimit(1)
+                                    .frame(width: 54)
+                                    .padding(.vertical, 4)
+                                    .background(Color.secondary.opacity(0.10), in: RoundedRectangle(cornerRadius: 6))
+                                Image(systemName: "arrow.right")
+                                    .font(.caption2)
+                                    .foregroundStyle(.tertiary)
+                                    .frame(width: 12)
+                                Text(mapping.action.label)
+                                    .lineLimit(1)
+                                Spacer()
+                                if store.selectedKeyID == mapping.key.id {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundStyle(.tint)
+                                }
+                            }
+                            .padding(.horizontal, 0)
+                            .padding(.vertical, 6)
+                            .background(
+                                store.selectedKeyID == mapping.key.id
+                                    ? Color.accentColor.opacity(0.11)
+                                    : Color.secondary.opacity(0.035),
+                                in: RoundedRectangle(cornerRadius: 9)
+                            )
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    if specialMappings.count > specialMappingPreviewLimit {
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.18)) {
+                                showsAllSpecialMappings.toggle()
+                            }
+                        } label: {
+                            HStack {
+                                Text(
+                                    showsAllSpecialMappings
+                                        ? "Show fewer"
+                                        : "Show \(specialMappings.count - specialMappingPreviewLimit) more"
+                                )
+                                Spacer()
+                                Image(systemName: "chevron.down")
+                                    .rotationEffect(.degrees(showsAllSpecialMappings ? 180 : 0))
+                            }
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.tint)
+                            .padding(.horizontal, 4)
+                            .padding(.top, 2)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+        }
+        .padding(12)
+        .background(Color.secondary.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+        .overlay {
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.secondary.opacity(0.10), lineWidth: 1)
+        }
+    }
+
+    private var searchTextBinding: Binding<String> {
+        Binding(
+            get: { store.searchText },
+            set: { store.searchText = $0 }
+        )
     }
 
     private var currentAction: KeyAction? {
@@ -252,6 +471,32 @@ struct ActionInspectorView: View {
             return matchesCategory && matchesSearch
         }
     }
+
+    private var groupedActions: [ActionGroup] {
+        let actionsByCategory = Dictionary(grouping: filteredActions, by: \.category)
+        return ActionCategory.allCases.compactMap { category in
+            guard let actions = actionsByCategory[category], !actions.isEmpty else { return nil }
+            return ActionGroup(category: category, actions: actions)
+        }
+    }
+
+    private var specialMappings: [DisplayedMapping] {
+        guard let keymap = store.configuration.keymaps[store.selectedSystem]?[store.selectedLayer] else {
+            return []
+        }
+        return FlowDefaults.physicalKeys.compactMap { key in
+            guard let action = keymap[key.id], action.category != .basic else { return nil }
+            return DisplayedMapping(key: key, action: action)
+        }
+    }
+
+    private var visibleSpecialMappings: [DisplayedMapping] {
+        showsAllSpecialMappings
+            ? specialMappings
+            : Array(specialMappings.prefix(specialMappingPreviewLimit))
+    }
+
+    private var specialMappingPreviewLimit: Int { 6 }
 
     private var availableActions: [KeyAction] {
         let macroActions = store.configuration.macros
@@ -388,28 +633,50 @@ private struct ActionChoiceRow: View {
     let isCurrent: Bool
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(action.label)
-                    .foregroundStyle(.primary)
-                Text(action.category.rawValue)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+        HStack(spacing: 8) {
+            Text(action.label)
+                .foregroundStyle(.primary)
+                .lineLimit(1)
+
             Spacer()
+
             if isCurrent {
-                Image(systemName: "checkmark")
+                Label("Current", systemImage: "checkmark.circle.fill")
+                    .font(.caption.weight(.semibold))
                     .foregroundStyle(.tint)
+                    .labelStyle(.iconOnly)
             }
         }
-        .padding(.vertical, 7)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .background(
+            isCurrent ? Color.accentColor.opacity(0.12) : Color.secondary.opacity(0.04),
+            in: RoundedRectangle(cornerRadius: 8)
+        )
         .contentShape(Rectangle())
     }
 }
 
+private struct ActionGroup: Identifiable {
+    let category: ActionCategory
+    let actions: [KeyAction]
+
+    var id: ActionCategory { category }
+}
+
+private struct DisplayedMapping: Identifiable {
+    let key: PhysicalKey
+    let action: KeyAction
+
+    var id: String { key.id }
+}
+
 private extension View {
     func inspectorControlRow(top: CGFloat, bottom: CGFloat) -> some View {
-        listRowInsets(EdgeInsets(top: top, leading: 12, bottom: bottom, trailing: 12))
+        padding(.horizontal, 14)
+            .padding(.top, top)
+            .padding(.bottom, bottom)
+            .listRowInsets(EdgeInsets())
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
     }

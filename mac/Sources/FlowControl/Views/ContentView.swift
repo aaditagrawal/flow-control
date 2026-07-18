@@ -135,7 +135,7 @@ struct ContentView: View {
     private var inspectorContent: some View {
         if store.selection == .keymap {
             ActionInspectorView(store: store)
-                .inspectorColumnWidth(min: 240, ideal: 290, max: 360)
+                .inspectorColumnWidth(min: 300, ideal: 350, max: 420)
         } else {
             WorkspaceInspectorView(store: store)
                 .inspectorColumnWidth(min: 220, ideal: 250, max: 320)

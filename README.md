@@ -38,6 +38,16 @@ No installation is required. Open [aaditagrawal.github.io/flow-control](https://
 
 The app supports only the device and firmware boundary documented below. Do not use it for firmware updates, receiver pairing, factory resets, or unsupported keyboards.
 
+## Screenshots
+
+![Flow Control key assignment workspace with a connected Flow Lite 84](docs/images/flow-control-key-assignment.png)
+
+| Lighting | Connected device |
+| --- | --- |
+| ![Flow Control lighting controls showing verified keyboard state](docs/images/flow-control-lighting.png) | ![Flow Control device page showing the connected keyboard identity](docs/images/flow-control-device.png) |
+
+Screenshots show the native macOS app reading the connected test keyboard documented below.
+
 ## Disclaimer
 
 Try it. This is very much a tech demo that works. 

@@ -4,11 +4,11 @@ import XCTest
 
 final class KeyboardCanvasLayoutTests: XCTestCase {
     func testNaturalKeyboardSizeMatchesAllPhysicalRows() {
-        XCTAssertEqual(KeyboardCanvasLayout.keyboardSize.width, 906, accuracy: 0.001)
+        XCTAssertEqual(KeyboardCanvasLayout.keyboardSize.width, 858, accuracy: 0.001)
         XCTAssertEqual(KeyboardCanvasLayout.keyboardSize.height, 298, accuracy: 0.001)
-        XCTAssertEqual(KeyboardCanvasLayout.chassisSize.width, 946, accuracy: 0.001)
+        XCTAssertEqual(KeyboardCanvasLayout.chassisSize.width, 898, accuracy: 0.001)
         XCTAssertEqual(KeyboardCanvasLayout.chassisSize.height, 338, accuracy: 0.001)
-        XCTAssertEqual(KeyboardCanvasLayout.paddedKeyboardSize.width, 994, accuracy: 0.001)
+        XCTAssertEqual(KeyboardCanvasLayout.paddedKeyboardSize.width, 946, accuracy: 0.001)
         XCTAssertEqual(KeyboardCanvasLayout.paddedKeyboardSize.height, 386, accuracy: 0.001)
     }
 
@@ -52,6 +52,18 @@ final class KeyboardCanvasLayoutTests: XCTestCase {
         XCTAssertGreaterThan(scale, 0.6)
         XCTAssertLessThanOrEqual(KeyboardCanvasLayout.paddedKeyboardSize.width * scale, viewport.width + 0.001)
         XCTAssertLessThanOrEqual(KeyboardCanvasLayout.paddedKeyboardSize.height * scale, viewport.height + 0.001)
+    }
+
+    func testReferenceLayoutUsesOnlyUniformInterKeySpacing() {
+        let keysByID = Dictionary(
+            uniqueKeysWithValues: KeyboardLayout.rows
+                .flatMap { $0 }
+                .map { ($0.id, $0) }
+        )
+
+        for keyID in ["f1", "print-screen", "home", "end", "page-up", "page-down", "arrow-left"] {
+            XCTAssertEqual(keysByID[keyID]?.spacerBefore, 0)
+        }
     }
 
     func testManualZoomPreferenceIsClampedToUsableLimits() {
